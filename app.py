@@ -9,7 +9,16 @@ app = Flask(__name__)
 @app.route('/add-heading', methods=['POST'])
 def add_heading():
     # Get form fields
+    video_file = request.files.get('video_url')
+if video_file:
+    input_path = f"/tmp/{uuid.uuid4()}.mp4"
+    video_file.save(input_path)
+else:
     video_url = request.form.get('video_url')
+    r = requests.get(video_url)
+    input_path = f"/tmp/{uuid.uuid4()}.mp4"
+    with open(input_path, 'wb') as f:
+        f.write(r.content)
     heading = request.form.get('heading', 'Sample Text')
     font_size = int(request.form.get('font_size', 48))
     font_color = request.form.get('font_color', 'white')
